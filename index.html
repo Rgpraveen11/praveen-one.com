@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>🎂 Birthday + Greeting Page</title>
+  <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/833/833472.png">
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --day1:#fff7e6; --day2:#d9f0ff;
+      --afternoon1:#ffe9c6; --afternoon2:#ffd5a5;
+      --night1:#1a1a2e; --night2:#16213e;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%;font-family:'Poppins',sans-serif;}
+    body{
+      background:linear-gradient(180deg,var(--day1),var(--day2));
+      display:flex;align-items:center;justify-content:center;padding:2.5rem;
+      transition:background 1s ease;overflow-x:hidden;
+    }
+    .sky-icon{position:absolute;top:1.25rem;right:1.5rem;font-size:2.5rem;transition:all .6s}
+    .card{
+      width:100%;max-width:980px;padding:2rem;border-radius:16px;
+      background:linear-gradient(135deg, rgba(255,255,255,0.65), rgba(255,255,255,0.5));
+      box-shadow:0 12px 30px rgba(10,20,30,0.12);backdrop-filter:blur(6px);
+    }
+    .top-row{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+    h1{font-family:'Dancing Script',cursive;font-size:clamp(28px,4.5vw,42px);margin:0;
+       background:linear-gradient(90deg,#ff7a45,#ffb86b);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .lead{color:#333;margin-top:6px}
+    .time-chip{padding:.4rem .8rem;border-radius:999px;background:rgba(255,255,255,0.6);font-weight:600}
+    .countdown{display:flex;gap:.75rem;align-items:center;flex-wrap:wrap}
+    .time-box{background:rgba(255,255,255,0.45);padding:.5rem .9rem;border-radius:12px;min-width:68px;text-align:center}
+    .time-box h2{font-size:1.25rem;margin:0;color:#111}
+    .time-box small{color:#333;opacity:.8}
+    .controls{margin-top:1rem;display:flex;gap:.6rem;flex-wrap:wrap}
+    .btn{border:0;padding:.65rem 1rem;border-radius:10px;background:linear-gradient(90deg,#ffb86b,#ff8a5b);color:#fff;font-weight:700;cursor:pointer}
+    .songBtn{padding:.55rem .9rem;border-radius:10px;border:0;cursor:pointer;background:linear-gradient(90deg,#ff9e76,#ff7a45);color:white;font-weight:600}
+    .section{margin-top:1.2rem}
+    .music-grid{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+    .quiz-area{margin-top:1rem;text-align:center}
+    .options button{display:block;margin:.45rem auto;padding:.55rem 1rem;border-radius:10px;border:0;background:#ffb86b;color:#fff;width:220px}
+    .result{margin-top:.8rem;font-weight:700}
+    #birthdayMessage{display:none;margin-top:1rem;font-size:1.6rem;color:#155724}
+    footer{
+      text-align:center;
+      margin-top:2rem;
+      font-size:.9rem;
+      color:#333;
+      opacity:.9;
+    }
+    footer button{
+      margin-top:.5rem;
+      background:linear-gradient(90deg,#ff8a5b,#ffb86b);
+      color:white;
+      border:none;
+      padding:.6rem 1rem;
+      border-radius:10px;
+      cursor:pointer;
+      font-weight:600;
+    }
+    @keyframes fall{to{transform:translateY(100vh) rotate(720deg);opacity:0}}
+  </style>
+</head>
+<body>
+  <div id="skyIcon" class="sky-icon">☀️</div>
+
+  <main class="card" role="main">
+    <div class="top-row">
+      <div>
+        <h1 id="greet">Good Morning, Sree ☀️</h1>
+        <h1 id="greet">Birthday count</h1>
+        <div class="lead">Here's a little page for your day 💫</div>
+      </div>
+
+      <!-- Countdown + time chip -->
+      <div style="text-align:right">
+        <div class="time-chip" id="timeChip">Time: --:--</div>
+        <div style="height:.6rem"></div>
+        <div class="countdown" aria-live="polite" id="countdownWrap">
+          <div class="time-box"><h2 id="days">0</h2><small>Days</small></div>
+          <div class="time-box"><h2 id="hours">0</h2><small>Hours</small></div>
+          <div class="time-box"><h2 id="minutes">0</h2><small>Minutes</small></div>
+          <div class="time-box"><h2 id="seconds">0</h2><small>Seconds</small></div>
+        </div>
+        <div id="birthdayMessage">🎉 Happy Birthday, Sree! 🎂</div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button class="btn" id="startDayBtn">Start your day 🌼</button>
+      <button class="btn" id="showCountdownBtn">Show Countdown (front)</button>
+    </div>
+
+    <!-- Music section -->
+    <div id="musicSection" class="section" style="display:none;text-align:center">
+      <h2>This is for you, bangaram ❤️</h2>
+      <p class="lead">Pick a song to start your day 🎶</p>
+      <div class="music-grid">
+        <audio id="song1" preload="none"><source src="song1.mp3"></audio>
+        <audio id="song2" preload="none"><source src="song2.mp3"></audio>
+        <audio id="song3" preload="none"><source src="song3.mp3"></audio>
+
+        <button class="songBtn" data-song="1">Play Song 1 🎵</button>
+        <button class="songBtn" data-song="2">Play Song 2 💖</button>
+        <button class="songBtn" data-song="3">Play Song 3 🌅</button>
+      </div>
+
+      <div style="margin-top:1rem">
+        <button class="btn" id="startExamBtn">Start Exam 📝</button>
+      </div>
+    </div>
+
+    <!-- Exam section -->
+    <div id="examSection" class="section" style="display:none">
+      <h2>💖 Sree’s Cute Exam 💖</h2>
+      <div style="display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap;margin-top:.5rem">
+        <div class="time-chip" id="examTimeChip">Time: --:--</div>
+        <div class="time-chip" id="examCountChip">Exam Attempts: 0</div>
+      </div>
+
+      <div class="quiz-area" id="quizArea"></div>
+    </div>
+
+    <!-- Footer with home button -->
+    <footer>
+      <p>Made with 💖 by Praveen for Sree</p>
+      <button id="homeBtn">🏠 Home</button>
+    </footer>
+  </main>
+
+  <!-- Birthday song -->
+  <audio id="birthdaySong" src="https://cdn.pixabay.com/download/audio/2023/03/15/audio_b21e4b91f0.mp3?filename=happy-birthday-to-you-14305.mp3"></audio>
+
+<script>
+  const TARGET = new Date("November 15, 2025 00:00:00").getTime();
+
+  function two(n){return String(n).padStart(2,'0')}
+  function updateTime(){
+    const now = new Date();
+    const h = now.getHours(), m = now.getMinutes();
+    document.getElementById('timeChip').textContent = `Time: ${two(h)}:${two(m)}`;
+    const examTimeEl = document.getElementById('examTimeChip');
+    if(examTimeEl) examTimeEl.textContent = `Time: ${two(h)}:${two(m)}`;
+    const greet = document.getElementById('greet');
+    const body = document.body;
+    const skyIcon = document.getElementById('skyIcon');
+
+    if (h >= 4 && h <= 11) {
+      greet.textContent = 'Good Morning, Sree ☀️';
+      body.style.background = 'linear-gradient(180deg,var(--day1),var(--day2))';
+      skyIcon.textContent = '🌅';
+    } else if (h >= 12 && h <= 15) {
+      greet.textContent = 'Good Afternoon, Sree 🌞';
+      body.style.background = 'linear-gradient(180deg,var(--afternoon1),var(--afternoon2))';
+      skyIcon.textContent = '☀️';
+    } else {
+      greet.textContent = 'Good Night, Sree 🌙';
+      body.style.background = 'linear-gradient(180deg,var(--night1),var(--night2))';
+      skyIcon.textContent = '🌙';
+    }
+  }
+  updateTime();
+  setInterval(updateTime, 30000);
+
+  const daysEl = document.getElementById('days');
+  const hoursEl = document.getElementById('hours');
+  const minutesEl = document.getElementById('minutes');
+  const secondsEl = document.getElementById('seconds');
+  const birthdayMessage = document.getElementById('birthdayMessage');
+  const birthdaySong = document.getElementById('birthdaySong');
+
+  function updateCountdown(){
+    const now = Date.now();
+    const diff = TARGET - now;
+    if (diff <= 0) {
+      daysEl.textContent = hoursEl.textContent = minutesEl.textContent = secondsEl.textContent = 0;
+      birthdayMessage.style.display = 'block';
+      confettiEffect();
+      playBirthdaySong();
+      return;
+    }
+    const d = Math.floor(diff / (1000*60*60*24));
+    const h = Math.floor((diff / (1000*60*60)) % 24);
+    const m = Math.floor((diff / (1000*60)) % 60);
+    const s = Math.floor((diff / 1000) % 60);
+    daysEl.textContent = d; hoursEl.textContent = h; minutesEl.textContent = m; secondsEl.textContent = s;
+  }
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+
+  function confettiEffect(){
+    for (let i = 0; i < 36; i++){
+      const node = document.createElement('div');
+      node.innerText = '🎉';
+      node.style.position = 'absolute';
+      node.style.left = (Math.random()*100) + 'vw';
+      node.style.top = '-10px';
+      node.style.fontSize = (Math.random()*28 + 18) + 'px';
+      node.style.pointerEvents = 'none';
+      node.style.animation = `fall ${Math.random()*2 + 2}s linear forwards`;
+      document.body.appendChild(node);
+      setTimeout(()=>node.remove(), 4500);
+    }
+  }
+
+  function playBirthdaySong(){
+    birthdaySong.play().catch(() => {});
+  }
+
+  const startDayBtn = document.getElementById('startDayBtn');
+  const musicSection = document.getElementById('musicSection');
+  const examSection = document.getElementById('examSection');
+  startDayBtn.addEventListener('click', ()=>{
+    musicSection.style.display = 'block';
+    examSection.style.display = 'none';
+    musicSection.scrollIntoView({behavior:'smooth'});
+  });
+
+  const songs = {
+    1: document.getElementById('song1'),
+    2: document.getElementById('song2'),
+    3: document.getElementById('song3')
+  };
+  let current = null;
+  document.querySelectorAll('.songBtn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const id = btn.getAttribute('data-song');
+      const sel = songs[id];
+      if (current && current !== sel) { current.pause(); current.currentTime = 0; }
+      if (sel.paused) {
+        sel.play().catch(()=>{ alert('Tap to allow music playback'); });
+        btn.textContent = `Pause Song ${id} ⏸️`;
+        current = sel;
+      } else {
+        sel.pause(); btn.textContent = `Play Song ${id} 🎵`; current = null;
+      }
+      document.querySelectorAll('.songBtn').forEach(b => {
+        if (b !== btn) b.textContent = `Play Song ${b.getAttribute('data-song')} 🎵`;
+      });
+    });
+  });
+
+  const quizQuestions = [
+    { q: "1. What is my favourite colour?", options: ["Red","Blue","Pink","Green"], correct: 0, wrongCount: 0 },
+    { q: "2. What is my favourite food?", options: ["biriyani","egg rice","papu annam","egg biriyani"], correct: 1, wrongCount: 0 },
+    { q: "3. What is my favourite Movie?", options: ["godavari","Pellichoopulu","Sammohanam","Darling"], correct: 2, wrongCount: 0 },
+    { q: "4. What is my Song?", options: ["Naa bangaram","Neeli Meghamulalo","Hey Manasendukila","Oohalu oorege gaalantha"], correct: 2, wrongCount: 0 }
+  ];
+  const quizArea = document.getElementById('quizArea');
+  const examCountChip = document.getElementById('examCountChip');
+  let currentQuestion = 0;
+  let examAttempts = 0;
+
+  document.getElementById('startExamBtn').addEventListener('click', ()=>{
+    musicSection.style.display = 'none';
+    examSection.style.display = 'block';
+    examAttempts++;
+    examCountChip.textContent = `Exam Attempts: ${examAttempts}`;
+    currentQuestion = 0;
+    showQuestion(currentQuestion);
+    examSection.scrollIntoView({behavior:'smooth'});
+  });
+
+  function showQuestion(index){
+    const q = quizQuestions[index];
+    quizArea.innerHTML = `
+      <div style="font-size:1.05rem;margin-bottom:.6rem">${q.q}</div>
+      <div class="options">
+        ${q.options.map((opt,i)=>`<button onclick="checkAnswer(${i})">${opt}</button>`).join('')}
+      </div>
+      <div class="result" id="resultText"></div>
+    `;
+  }
+
+  window.checkAnswer = function(selectedIndex){
+    const resultText = document.getElementById('resultText');
+    const currentQ = quizQuestions[currentQuestion];
+    if (selectedIndex === currentQ.correct) {
+      resultText.textContent = "✅ Aha bangaram 😍"; resultText.style.color = "green";
+      currentQuestion++;
+      if (currentQuestion < quizQuestions.length) {
+        setTimeout(()=> showQuestion(currentQuestion), 700);
+      } else {
+        setTimeout(()=> {
+          quizArea.innerHTML = `
+            <h3 style="color:green">🎉 Congratulations! You completed the quiz 💖</h3>
+            <audio id="song4" controls autoplay><source src="song01.mp3" type="audio/mpeg"></audio>
+            <div id="wrongList" style="text-align:left;margin-top:10px"></div>
+          `;
+          if (current) { current.pause(); current.currentTime = 0; current = null; }
+          const wrongList = document.getElementById('wrongList');
+          wrongList.innerHTML = "<h4>❌ Wrong Attempts per Question:</h4>" +
+            quizQuestions.map(q=>`<p>${q.q} — Wrong attempts: ${q.wrongCount}</p>`).join('');
+        }, 700);
+      }
+    } else {
+      currentQ.wrongCount++;
+      resultText.innerHTML = `❌ pove nagurinchi em teliyadu niku! Try again 💔<br>⚠️ Wrong attempts: ${currentQ.wrongCount}`;
+      resultText.style.color = "red";
+    }
+  };
+
+  document.getElementById('showCountdownBtn').addEventListener('click', ()=>{
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  // Home button scrolls to top and hides all sections
+  document.getElementById('homeBtn').addEventListener('click', ()=>{
+    musicSection.style.display = 'none';
+    examSection.style.display = 'none';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+</script>
+</body>
+</html>
+
